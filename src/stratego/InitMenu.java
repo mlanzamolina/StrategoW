@@ -85,7 +85,7 @@ public class InitMenu extends javax.swing.JFrame {
         // Check if login was successful
         if (loginDialog.isLoginSuccessful()) {
             // Handle successful login
-            JOptionPane.showMessageDialog(this, "Login Successful!");
+           // JOptionPane.showMessageDialog(this, "Login Successful!");
             dispose();
         } else {
             // Handle failed login or user canceled

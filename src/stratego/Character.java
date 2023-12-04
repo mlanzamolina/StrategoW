@@ -5,6 +5,7 @@ package stratego;
  * @author marco
  */
 import javax.swing.ImageIcon;
+
 public class Character {
     private String name;
     private boolean isHero;
@@ -13,9 +14,11 @@ public class Character {
     private int x; // Initialize with default values
     private int y;
     private ImageIcon imagen;
+    private boolean moveable;
+    private boolean ortogonal;
 
     // Constructor
-    public Character(String name, boolean isHero, boolean isAlive, int powerRating,String FichasImagenes) {
+    public Character(String name, boolean isHero, boolean isAlive, int powerRating, String FichasImagenes) {
         this.name = name;
         this.isHero = isHero;
         this.isAlive = isAlive;
@@ -23,8 +26,11 @@ public class Character {
         this.x = -1;
         this.y = -1;
         this.imagen = new ImageIcon(FichasImagenes);
+        this.moveable = true;
+        this.ortogonal = true;
         // setCoordinates(isHero);
     }
+
     // Getter methods
     public String getName() {
         return name;
@@ -49,8 +55,17 @@ public class Character {
     public int getY() {
         return y;
     }
-    public ImageIcon getImage(){
+
+    public ImageIcon getImage() {
         return imagen;
+    }
+
+    public boolean getMoveable() {
+        return moveable;
+    }
+
+    public boolean getOrtogonal() {
+        return ortogonal;
     }
 
     // Setter methods
@@ -77,8 +92,17 @@ public class Character {
     public void setY(int y) {
         this.y = y;
     }
-    public void setImage(String image){
+
+    public void setImage(String image) {
         this.imagen = new ImageIcon(image);
+    }
+
+    public void setMoveable(boolean moveable) {
+        this.moveable = moveable;
+    }
+
+    public void setOrtogonal(boolean ortogonal) {
+        this.ortogonal = ortogonal;
     }
 
     public void printCharacterStates() {
