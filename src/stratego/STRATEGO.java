@@ -6,8 +6,24 @@ import javax.swing.*;
 public class STRATEGO {
 
     public static void main(String[] args) {
-        // Open the InitMenu
+        //load characters
+       //load characters
+         //Open the InitMenu
+       //InitCharacters initCharacters = InitCharacters.getInstance();
+       // Get the array of characters
+        //Character[] characters = initCharacters.getCharacters();
+        
         SwingUtilities.invokeLater(() -> new InitMenu().setVisible(true));
+//          for (Character character : characters) {
+//                System.out.println("Found character: " + character.getName());
+//            }
+        
+        
+         // Imprimir el estado de cada personaje
+        //  for (Character character : characters) {
+        //     character.printCharacterStates();
+        // }
+       
        
 
         // Open the Login Dialog after InitMenu is closed

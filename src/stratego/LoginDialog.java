@@ -99,7 +99,7 @@ public class LoginDialog extends javax.swing.JDialog {
         char[] enteredPassword = passwordField.getPassword();
 
         // Replace this check with your actual login validation logic
-        if (enteredUsername.equals("user") && String.valueOf(enteredPassword).equals("password")) {
+        if (enteredUsername.equals("user") && String.valueOf(enteredPassword).equals("pass")) {
             loginSuccessful = true;
             dispose(); // Close the dialog
             SwingUtilities.invokeLater(() -> new GameBoard());
