@@ -32,11 +32,18 @@ public class InitCharacters {
 
     private Character[] makeCharacters() {
         // Create an array of Character objects
-        Character[] characters = new Character[80];
+        Character[] spaceForCharacters = new Character[80];
+        Character[] characters = populateCharacterArray(spaceForCharacters);
+
         List<String> availableHeroCoordinates = new ArrayList<>();
         List<String> availableHeroPlanetCoordinates = new ArrayList<>();
+        List<String> availableBombHeroPlanetCoordinates = new ArrayList<>();
+        List<String> availableBombHeroPR2Coordinates = new ArrayList<>();
+
         List<String> availableVillainCoordinates = new ArrayList<>();
         List<String> availableVillainPlanetCoordinates = new ArrayList<>();
+        List<String> availableBombVillainPlanetCoordinates = new ArrayList<>();
+        List<String> availableBombVillainPR2Coordinates = new ArrayList<>();
 
         // Initialize the lists of available coordinates excluding rows 4 and 5
         int contHero = 0;
@@ -49,25 +56,215 @@ public class InitCharacters {
                     if (i >= 6) {
                         availableHeroCoordinates.add(i + "-" + j);
                         contHero++;
-                        if (i == 7 || i == 8) {
+                        if (i == 9) {
                             if (j >= 1 && j <= 8) {
                                 availableHeroPlanetCoordinates.add(i + "-" + j);
                                 contHeroPlanet++;
                             }
                         }
+                        if (i == 9 || i == 8) {
+                            availableBombHeroPlanetCoordinates.add(i + "-" + j);
+                        }
+                        if (i == 6 || i == 7) {
+                            availableBombHeroPR2Coordinates.add(i + "-" + j);
+                        }
+
                     } else {
                         availableVillainCoordinates.add(i + "-" + j);
                         contVillain++;
-                        if (i == 1 || i == 2) {
+                        if (i == 0) {
                             if (j >= 1 && j <= 8) {
                                 availableVillainPlanetCoordinates.add(i + "-" + j);
                                 contVillainPlanet++;
                             }
                         }
+                        if (i == 0 || i == 1) {
+                            availableBombVillainPlanetCoordinates.add(i + "-" + j);
+                        }
+                        if (i == 2 || i == 3) {
+                            availableBombVillainPR2Coordinates.add(i + "-" + j);
+                        }
                     }
                 }
             }
         }
+
+        // Shuffle the lists of available coordinates for heroes and villains
+        Collections.shuffle(availableHeroCoordinates);
+        Collections.shuffle(availableVillainCoordinates);
+        Collections.shuffle(availableHeroPlanetCoordinates);
+        Collections.shuffle(availableVillainPlanetCoordinates);
+        Collections.shuffle(availableBombHeroPlanetCoordinates);
+        Collections.shuffle(availableBombVillainPlanetCoordinates);
+        Collections.shuffle(availableBombHeroPR2Coordinates);
+        Collections.shuffle(availableBombVillainPR2Coordinates);
+        List<String> availablePumpkinBomb = new ArrayList<>();
+        List<String> availableNovaBlastBomb = new ArrayList<>();
+
+        int totalCharacters = characters.length;
+
+        int contHeroFound = 0;
+        int contVillainFound = 0;
+        String earthHero = availableHeroPlanetCoordinates.get(0);
+        availableBombHeroPlanetCoordinates.remove(availableHeroPlanetCoordinates.get(0));
+        String earthVillain = availableVillainPlanetCoordinates.get(0);
+        availableBombVillainPlanetCoordinates.remove(availableVillainPlanetCoordinates.get(0));
+        assignCoordinates(characters[0], earthHero);
+        characters[0].setMoveable(false);
+
+        assignCoordinates(characters[1], earthVillain);
+        characters[1].setMoveable(false);
+        availableHeroCoordinates.remove(availableHeroPlanetCoordinates.get(0));
+        availableVillainCoordinates.remove(availableVillainPlanetCoordinates.get(0));
+
+        Set<String> coordinatesSetNovaBlast = generateRandomCoordinates(characters[0].getX(), characters[0].getY());
+        availableNovaBlastBomb = new ArrayList<>(coordinatesSetNovaBlast);
+        Set<String> coordinatesSetPumpkinBomb = generateRandomCoordinates(characters[1].getX(), characters[1].getY());
+        availablePumpkinBomb = new ArrayList<>(coordinatesSetPumpkinBomb);
+        // Print the generated coordinates
+        System.out.println("Generated Coordinates NOVA BLAST:");
+        int contNovaBlast = 8;
+        int indexNovaBlast = 0;
+        int contPumpkinBomb = 2;
+        int indexPumpkinBomb = 0;
+        for (String coordinate : coordinatesSetNovaBlast) {
+            // split x and y
+            String[] coordinatesArray = coordinate.split("-");
+            availableHeroCoordinates.remove(availableNovaBlastBomb.get(indexNovaBlast));
+            availableBombHeroPlanetCoordinates.remove(coordinate);
+            int x = Integer.parseInt(coordinatesArray[0]);
+            int y = Integer.parseInt(coordinatesArray[1]);
+            // System.out.println("this is x:"+x+"this is y"+y);
+            characters[contNovaBlast].setX(x);
+            characters[contNovaBlast].setY(y);
+            characters[contNovaBlast].setMoveable(false);
+            contNovaBlast++;
+            indexNovaBlast++;
+        }
+        // place remaining Nova Blast
+        int remainingNovaBlast = 6 - indexNovaBlast;
+        for (int i = 0; i < remainingNovaBlast; i++) {
+            String coordinate = availableBombHeroPlanetCoordinates.get(i);
+            availableHeroCoordinates.remove(availableBombHeroPlanetCoordinates.get(i));
+            assignCoordinates(characters[contNovaBlast], coordinate);
+            characters[contNovaBlast].setMoveable(false);
+            contNovaBlast++;
+            // contHeroFound++;
+        }
+
+        System.out.println("Generated Coordinates PUMPKINBONB:");
+        for (String coordinate : coordinatesSetPumpkinBomb) {
+            // split x and y
+            String[] coordinatesArray = coordinate.split("-");
+            availableVillainCoordinates.remove(coordinate);
+            availableBombVillainPlanetCoordinates.remove(coordinate);
+            int x = Integer.parseInt(coordinatesArray[0]);
+            int y = Integer.parseInt(coordinatesArray[1]);
+            // System.out.println("this is x:"+x+"this is y"+y);
+            characters[contPumpkinBomb].setX(x);
+            characters[contPumpkinBomb].setY(y);
+            characters[contPumpkinBomb].setMoveable(false);
+            contPumpkinBomb++;
+            indexPumpkinBomb++;
+        }
+        // place remaining Pumpkin Bomb
+        int remainingPumpkinBomb = 6 - indexPumpkinBomb;
+        for (int i = 0; i < remainingPumpkinBomb; i++) {
+            String coordinate = availableBombVillainPlanetCoordinates.get(i);
+            availableVillainCoordinates.remove(availableBombVillainPlanetCoordinates.get(i));
+            assignCoordinates(characters[contPumpkinBomb], coordinate);
+            characters[contPumpkinBomb].setMoveable(false);
+            contPumpkinBomb++;
+            // contVillainFound++;
+        }
+        System.out.println("Placing powerranking 2 villains");
+        // place villains PR 2
+        int pr2foundVillain = 0;
+        int pr2foundHero = 0;
+        for (int i = 0; i < totalCharacters; i++) {
+            if (!characters[i].isHero() && characters[i].getPowerRating() == 2) {
+                String coordinate = availableBombVillainPR2Coordinates.get(pr2foundVillain);
+                availableVillainCoordinates.remove(availableBombVillainPR2Coordinates.get(pr2foundVillain));
+                assignCoordinates(characters[i], coordinate);
+                pr2foundVillain++;
+            }
+        }
+        System.out.println("Placing powerranking 2 heroes");
+        // place heroes PR 2
+        for (int i = 0; i < totalCharacters; i++) {
+            if (characters[i].isHero() && characters[i].getPowerRating() == 2) {
+                String coordinate = availableBombHeroPR2Coordinates.get(pr2foundHero);
+                availableHeroCoordinates.remove(availableBombHeroPR2Coordinates.get(pr2foundHero));
+                assignCoordinates(characters[i], coordinate);
+                pr2foundHero++;
+            }
+        }
+
+        for (int i = 0; i < totalCharacters; i++) {
+            if (characters[i].isHero() && !characters[i].getName().equals("Tierra")
+                    && !characters[i].getName().equals("Nova Blast") && characters[i].getPowerRating() != 2) {
+                String coordinate = availableHeroCoordinates.get(contHeroFound);
+                assignCoordinates(characters[i], coordinate);
+                contHeroFound++;
+            }
+        }
+
+        for (int i = 0; i < totalCharacters; i++) {
+            if (!characters[i].isHero() && !characters[i].getName().equals("Planet Tierra")
+                    && !characters[i].getName().equals("Pumpkin Bomb") && characters[i].getPowerRating() != 2) {
+                String coordinate = availableVillainCoordinates.get(contVillainFound);
+                assignCoordinates(characters[i], coordinate);
+                contVillainFound++;
+            }
+        }
+
+        return characters;
+    }
+
+    private static void assignCoordinates(Character character, String coordinate) {
+        String[] coordinatesArray = coordinate.split("-");
+        int x = Integer.parseInt(coordinatesArray[0]);
+        int y = Integer.parseInt(coordinatesArray[1]);
+
+        character.setX(x);
+        character.setY(y);
+    }
+
+    private static Set<String> generateRandomCoordinates(int centerX, int centerY) {
+        Set<String> coordinatesSet = new HashSet<>();
+        Random random = new Random();
+
+        // Define los posibles desplazamientos para obtener las celdas adyacentes
+        int[] possibleOffsets = { -1, 0, 1 };
+
+        // Genera un número aleatorio entre 3 y 5 para numCoordinates
+        int numCoordinates = random.nextInt(3) + 3;
+
+        while (coordinatesSet.size() < numCoordinates) {
+            // Elige un desplazamiento aleatorio para X e Y de los posibles desplazamientos
+            int offsetX = possibleOffsets[random.nextInt(possibleOffsets.length)];
+            int offsetY = possibleOffsets[random.nextInt(possibleOffsets.length)];
+            // Calcula las nuevas coordenadas
+            int newX = centerX + offsetX;
+            int newY = centerY + offsetY;
+
+            // Asegúrate de no incluir la celda original (centerX, centerY)
+            // y que las nuevas coordenadas estén dentro de los límites permitidos
+            if ((offsetX != 0 || offsetY != 0) && newX >= 0 && newX < 10) {
+                // Crea una cadena de coordenadas única
+                String coordinate = newX + "-" + newY;
+
+                // Añade la coordenada al conjunto para asegurar la unicidad
+                coordinatesSet.add(coordinate);
+            }
+        }
+
+        return coordinatesSet;
+    }
+
+    private static Character[] populateCharacterArray(Character[] _characters) {
+        Character[] characters;
+        characters = _characters;
 
         // Tierra
         characters[0] = new Character("Tierra", true, true, 0, "./src/stratego/images/-10.png");
@@ -205,119 +402,7 @@ public class InitCharacters {
         // Héroes PR 10
         characters[79] = new Character("Mr Fantastic", true, true, 10, "./src/stratego/images/20.png");
 
-        // Shuffle the lists of available coordinates for heroes and villains
-        Collections.shuffle(availableHeroCoordinates);
-        Collections.shuffle(availableVillainCoordinates);
-        Collections.shuffle(availableHeroPlanetCoordinates);
-        Collections.shuffle(availableVillainPlanetCoordinates);
-        List<String> availablePumpkinBomb = new ArrayList<>();
-        List<String> availableNovaBlastBomb = new ArrayList<>();
-
-        int totalCharacters = characters.length;
-
-        int contHeroFound = 0;
-        int contVillainFound = 0;
-        String earthHero = availableHeroPlanetCoordinates.get(0);
-        String earthVillain = availableVillainPlanetCoordinates.get(0);
-        assignCoordinates(characters[0], earthHero);
-        characters[0].setMoveable(false);
-
-        assignCoordinates(characters[1], earthVillain);
-        characters[1].setMoveable(false);
-        availableHeroCoordinates.remove(availableHeroPlanetCoordinates.get(0));
-        availableVillainCoordinates.remove(availableVillainPlanetCoordinates.get(0));
-
-        Set<String> coordinatesSetNovaBlast = generateRandomCoordinates(characters[0].getX(), characters[0].getY(), 6);
-        availableNovaBlastBomb = new ArrayList<>(coordinatesSetNovaBlast);
-        Set<String> coordinatesSetPumpkinBomb = generateRandomCoordinates(characters[1].getX(), characters[1].getY(),
-                6);
-        availablePumpkinBomb = new ArrayList<>(coordinatesSetPumpkinBomb);
-        // Print the generated coordinates
-        System.out.println("Generated Coordinates NOVA BLAST:");
-        int contNovaBlast = 8;
-        int indexNovaBlast = 0;
-        int contPumpkinBomb = 2;
-        int indexPumpkinBomb = 0;
-        for (String coordinate : coordinatesSetNovaBlast) {
-            // split x and y
-            String[] coordinatesArray = coordinate.split("-");
-            availableHeroCoordinates.remove(availableNovaBlastBomb.get(indexNovaBlast));
-            int x = Integer.parseInt(coordinatesArray[0]);
-            int y = Integer.parseInt(coordinatesArray[1]);
-            // System.out.println("this is x:"+x+"this is y"+y);
-            characters[contNovaBlast].setX(x);
-            characters[contNovaBlast].setY(y);
-            characters[contNovaBlast].setMoveable(false);
-            contNovaBlast++;
-            indexNovaBlast++;
-        }
-        System.out.println("Generated Coordinates PUMPKINBONB:");
-        for (String coordinate : coordinatesSetPumpkinBomb) {
-            // split x and y
-            String[] coordinatesArray = coordinate.split("-");
-            availableVillainCoordinates.remove(availablePumpkinBomb.get(indexPumpkinBomb));
-            int x = Integer.parseInt(coordinatesArray[0]);
-            int y = Integer.parseInt(coordinatesArray[1]);
-            // System.out.println("this is x:"+x+"this is y"+y);
-            characters[contPumpkinBomb].setX(x);
-            characters[contPumpkinBomb].setY(y);
-            characters[contPumpkinBomb].setMoveable(false);
-            contPumpkinBomb++;
-            indexPumpkinBomb++;
-        }
-
-        for (int i = 0; i < totalCharacters; i++) {
-            if (characters[i].isHero() && !characters[i].getName().equals("Tierra")
-                    && !characters[i].getName().equals("Nova Blast")) {
-                String coordinate = availableHeroCoordinates.get(contHeroFound);
-                assignCoordinates(characters[i], coordinate);
-                contHeroFound++;
-            }
-        }
-
-        for (int i = 0; i < totalCharacters; i++) {
-            if (!characters[i].isHero() && !characters[i].getName().equals("Planet Tierra")
-                    && !characters[i].getName().equals("Pumpkin Bomb")) {
-                String coordinate = availableVillainCoordinates.get(contVillainFound);
-                assignCoordinates(characters[i], coordinate);
-                contVillainFound++;
-            }
-        }
-
         return characters;
-    }
 
-    private static void assignCoordinates(Character character, String coordinate) {
-        String[] coordinatesArray = coordinate.split("-");
-        int x = Integer.parseInt(coordinatesArray[0]);
-        int y = Integer.parseInt(coordinatesArray[1]);
-
-        character.setX(x);
-        character.setY(y);
-    }
-
-    private static Set<String> generateRandomCoordinates(int centerX, int centerY, int numCoordinates) {
-        Set<String> coordinatesSet = new HashSet<>();
-        Random random = new Random();
-
-        // Define los posibles desplazamientos para obtener las celdas adyacentes
-        int[] possibleOffsets = { -1, 0, 1 };
-
-        while (coordinatesSet.size() < numCoordinates) {
-            // Elige un desplazamiento aleatorio para X e Y de los posibles desplazamientos
-            int offsetX = possibleOffsets[random.nextInt(possibleOffsets.length)];
-            int offsetY = possibleOffsets[random.nextInt(possibleOffsets.length)];
-
-            // Asegúrate de no incluir la celda original (centerX, centerY)
-            if (offsetX != 0 || offsetY != 0) {
-                // Crea una cadena de coordenadas única
-                String coordinate = (centerX + offsetX) + "-" + (centerY + offsetY);
-
-                // Añade la coordenada al conjunto para asegurar la unicidad
-                coordinatesSet.add(coordinate);
-            }
-        }
-
-        return coordinatesSet;
     }
 }

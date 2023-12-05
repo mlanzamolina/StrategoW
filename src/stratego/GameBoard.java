@@ -3,10 +3,17 @@ package stratego;
 import javax.swing.*;
 import java.awt.*;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ArrayList;
 
 public class GameBoard extends JFrame {
     private Character[] characters;
     private JButton[][] buttons = new JButton[10][10]; // Matriz de botones
+    List<Character> eliminatedHeroes = new ArrayList<>();
+    List<Character> eliminatedVillains = new ArrayList<>();
+    private int heroesScore = 0;
+    private int villainsScore = 0;
 
     public GameBoard() {
         // Set up the main frame
@@ -128,44 +135,104 @@ public class GameBoard extends JFrame {
         if (selectedCharacter.getX() == row && selectedCharacter.getY() == col) {
             handleCharacterDeselection(row, col);
         } else {
-            // Resto del código...
             boolean isEmpty = isCellEmpty(row, col);
 
-            boolean isAdjacent = selectedCharacter.getPowerRating() == 2 ||
-                    (selectedCharacter.getX() == row && Math.abs(selectedCharacter.getY() - col) == 1) ||
+            boolean isAdjacent = (selectedCharacter.getX() == row && Math.abs(selectedCharacter.getY() - col) == 1) ||
                     (selectedCharacter.getY() == col && Math.abs(selectedCharacter.getX() - row) == 1);
 
-            if (isEmpty && isAdjacent) {
-                // Check if there's a character at the new location
+            boolean canMove = isAdjacent;
+
+            if (selectedCharacter.getPowerRating() == 2 && !isAdjacent) {
+                canMove = (selectedCharacter.getX() == row || selectedCharacter.getY() == col)
+                        && isPathClear(selectedCharacter.getX(), selectedCharacter.getY(), row, col);
+            }
+
+            if (isEmpty && canMove) {
                 Character targetCharacter = getCharacterAtLocation(row, col);
 
                 moveCharacter(row, col);
 
-                // Resto del código...
                 isHeroTurn = !isHeroTurn;
-            } else if (isAdjacent) {
-                // Check if there's a character at the new location
+            } else if (isAdjacent || selectedCharacter.getPowerRating() == 2) {
                 Character targetCharacter = getCharacterAtLocation(row, col);
 
                 if (targetCharacter != null) {
-                    // Elimination logic
-                    if (selectedCharacter.getPowerRating() > targetCharacter.getPowerRating()) {
-                        if ((!targetCharacter.isHero() && isHeroTurn) || (targetCharacter.isHero() && !isHeroTurn)) {
-                            eliminateCharacter(targetCharacter);
-
-                            moveCharacter(row, col);
-
-                            // Resto del código...
+                    // Asegúrate de que los personajes son de equipos opuestos
+                    if (selectedCharacter.isHero() != targetCharacter.isHero()) {
+                        if (targetCharacter.getName().equals("Tierra")) {
+                            endGame("Villains");
+                        } else if (targetCharacter.getName().equals("Planet Tierra")) {
+                            endGame("Heroes");
+                        } else if (selectedCharacter.getPowerRating() > targetCharacter.getPowerRating() ||
+                                (selectedCharacter.getPowerRating() == 3 &&
+                                        (targetCharacter.getName().equals("Nova Blast")
+                                                || targetCharacter.getName().equals("Pumpkin Bomb")))
+                                ||
+                                (selectedCharacter.getPowerRating() == 1 && targetCharacter.getPowerRating() == 10)) {
+                            if ((!targetCharacter.isHero() && isHeroTurn)
+                                    || (targetCharacter.isHero() && !isHeroTurn)) {
+                                eliminateCharacter(targetCharacter, false, false);
+                                moveCharacter(row, col);
+                                isHeroTurn = !isHeroTurn;
+                            }
+                        } else if (selectedCharacter.getPowerRating() < targetCharacter.getPowerRating()) {
+                            // Si una pieza menor ataca a una mayor, se elimina sola
+                            eliminateCharacter(selectedCharacter, true, false);
+                            selectedCharacter = null; // Permitir la selección de otra pieza
                             isHeroTurn = !isHeroTurn;
+                        } else if (selectedCharacter.getPowerRating() == targetCharacter.getPowerRating()) {
+                            // Si tienen el mismo powerRating, se eliminan solas
+                            List<Character> charactersToEliminate = new ArrayList<>();
+                            charactersToEliminate.add(targetCharacter);
+                            buttons[targetCharacter.getX()][targetCharacter.getY()]
+                                    .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                            charactersToEliminate.add(selectedCharacter);
+                            buttons[selectedCharacter.getX()][selectedCharacter.getY()]
+                                    .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                            for (Character character : charactersToEliminate) {
+                                eliminateCharacter(character, false, true);
+                            }
 
+                            selectedCharacter = null; // Permitir la selección de otra pieza
+                            isHeroTurn = !isHeroTurn;
+                            repaint();
+                            updateEliminatedCharactersWindows();
+                        } else if (selectedCharacter.getPowerRating() == 1) {
+                            // saveTheEarth();
+                        } else {
+                            // Handle other cases if needed
                         }
-                    } else {
-                        // Handle other cases if needed
                     }
                 }
-
             }
         }
+    }
+
+    private void endGame(String winner) {
+        // Muestra un mensaje al usuario
+        if (winner.equals("Villains")) {
+            System.out.println("¡Los villanos han capturado la Tierra y ganado el juego!");
+        } else if (winner.equals("Heroes")) {
+            System.out.println("¡Los héroes han capturado el Planeta Tierra y ganado el juego!");
+        }
+
+        // Aquí puedes poner la lógica para terminar el juego
+        // Por ejemplo, podrías detener todos los hilos de ejecución del juego, cerrar
+        // todas las ventanas, etc.
+        System.out.println("El juego ha terminado.");
+    }
+
+    private boolean isPathClear(int startX, int startY, int endX, int endY) {
+        int xDirection = startX == endX ? 0 : (endX - startX) / Math.abs(endX - startX);
+        int yDirection = startY == endY ? 0 : (endY - startY) / Math.abs(endY - startY);
+
+        for (int i = 1; i < Math.max(Math.abs(endX - startX), Math.abs(endY - startY)); i++) {
+            if (!isCellEmpty(startX + i * xDirection, startY + i * yDirection)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void handleCharacterSelection(int row, int col) {
@@ -232,17 +299,92 @@ public class GameBoard extends JFrame {
         return null;
     }
 
-    private void eliminateCharacter(Character character) {
+    private void eliminateCharacter(Character character, boolean deathByBomb, boolean mutualElim) {
+
         buttons[selectedCharacter.getX()][selectedCharacter.getY()]
                 .setBorder(BorderFactory.createLineBorder(Color.black, 1));
         character.setAlive(false);
         character.setX(-1);
         character.setY(-1);
-        System.out.println("Character " + character.getName() + " has been eliminated by "
-                + selectedCharacter.getName());
+        if (deathByBomb) {
+            System.out.println("Character " + character.getName() + " Eliminated himself! ");
+        } else {
+            System.out.println(
+                    "Character " + character.getName() + " has been eliminated by " + selectedCharacter.getName());
+        }
+        // Agrega el personaje a la lista de personajes eliminados
+        if (!mutualElim) {
+
+            if (character.isHero()) {
+                eliminatedHeroes.add(character);
+                heroesScore += 5;
+            } else {
+                eliminatedVillains.add(character);
+                villainsScore += 5;
+            }
+            repaint();
+            updateEliminatedCharactersWindows();
+        }
+
+        // Actualiza las ventanas de personajes eliminados
 
         // Redibuja la interfaz gráfica
-        repaint();
+    }
+
+    private JFrame heroesWindow;
+    private JFrame villainsWindow;
+
+    private void updateEliminatedCharactersWindows() {
+        // Crea y configura las ventanas si aún no existen
+
+        if (heroesWindow == null) {
+            heroesWindow = new JFrame("Villanos");
+            heroesWindow.setSize(300, 200);
+            heroesWindow.setLocationRelativeTo(null);
+            heroesWindow.getContentPane().setLayout(new BorderLayout());
+            heroesWindow.setVisible(true);
+        }
+        if (villainsWindow == null) {
+            villainsWindow = new JFrame("Héroes");
+            villainsWindow.setSize(300, 200);
+            villainsWindow.setLocationRelativeTo(null);
+            villainsWindow.getContentPane().setLayout(new BorderLayout());
+            villainsWindow.setVisible(true);
+        }
+
+        // Crea los paneles para los personajes eliminados
+        JPanel heroesPanel = new JPanel();
+        heroesPanel.setLayout(new BoxLayout(heroesPanel, BoxLayout.Y_AXIS));
+        JPanel villainsPanel = new JPanel();
+        villainsPanel.setLayout(new BoxLayout(villainsPanel, BoxLayout.Y_AXIS));
+
+        // Agrega los personajes eliminados a los paneles
+        for (Character hero : eliminatedHeroes) {
+            heroesPanel.add(new JLabel(hero.getName() + " (HERO) Power: " + hero.getPowerRating()));
+        }
+        for (Character villain : eliminatedVillains) {
+            villainsPanel.add(new JLabel(villain.getName() + " (VILLAIN) Power: " + villain.getPowerRating()));
+        }
+
+        // Crea los JScrollPane y añade los paneles a ellos
+        JScrollPane heroesScrollPane = new JScrollPane(heroesPanel);
+        JScrollPane villainsScrollPane = new JScrollPane(villainsPanel);
+
+        // Actualiza el contenido de las ventanas
+        heroesWindow.getContentPane().removeAll();
+        villainsWindow.getContentPane().removeAll();
+        heroesWindow.getContentPane().add(new JLabel("Puntuación: " + heroesScore), BorderLayout.NORTH);
+        heroesWindow.getContentPane().add(heroesScrollPane, BorderLayout.CENTER);
+        villainsWindow.getContentPane().add(new JLabel("Puntuación: " + villainsScore), BorderLayout.NORTH);
+        villainsWindow.getContentPane().add(villainsScrollPane, BorderLayout.CENTER);
+        heroesWindow.getContentPane().add(new JLabel("Puntuación: " + heroesScore), BorderLayout.NORTH);
+        villainsWindow.getContentPane().add(new JLabel("Puntuación: " + villainsScore), BorderLayout.NORTH);
+
+        // Actualiza las ventanas
+        heroesWindow.revalidate();
+        heroesWindow.repaint();
+        villainsWindow.revalidate();
+        villainsWindow.repaint();
     }
 
     public static void main(String[] args) {

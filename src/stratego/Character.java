@@ -16,6 +16,7 @@ public class Character {
     private ImageIcon imagen;
     private boolean moveable;
     private boolean ortogonal;
+    private boolean show;
 
     // Constructor
     public Character(String name, boolean isHero, boolean isAlive, int powerRating, String FichasImagenes) {
@@ -28,6 +29,7 @@ public class Character {
         this.imagen = new ImageIcon(FichasImagenes);
         this.moveable = true;
         this.ortogonal = true;
+        this.show = true;
         // setCoordinates(isHero);
     }
 
@@ -67,6 +69,9 @@ public class Character {
     public boolean getOrtogonal() {
         return ortogonal;
     }
+    public boolean getShow() {
+        return show;
+    }
 
     // Setter methods
     public void setName(String name) {
@@ -103,6 +108,9 @@ public class Character {
 
     public void setOrtogonal(boolean ortogonal) {
         this.ortogonal = ortogonal;
+    }
+    public void setShow(boolean show) {
+        this.show = show;
     }
 
     public void printCharacterStates() {
