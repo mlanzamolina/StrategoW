@@ -29,7 +29,7 @@ public class Character {
         this.imagen = new ImageIcon(FichasImagenes);
         this.moveable = true;
         this.ortogonal = true;
-        this.show = true;
+        this.show = false;
         // setCoordinates(isHero);
     }
 
@@ -72,6 +72,7 @@ public class Character {
     public boolean getShow() {
         return show;
     }
+    
 
     // Setter methods
     public void setName(String name) {

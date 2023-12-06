@@ -2,37 +2,88 @@ package stratego;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameBoard extends JFrame {
     private Character[] characters;
     private JButton[][] buttons = new JButton[10][10]; // Matriz de botones
+    // private JButton confirmEndTurnHideCards = new JButton("Confirm End Turn");
+    private JButton resignGame = new JButton("Resign Game");
+    private String cardBackgroundImages = "./src/stratego/images/Who_question_mark.png"; // Array to hold card
+                                                                                         // background images
+    private String[] originalButtonImages;
+    private boolean isHeroTurn = true;
+    private ArrayList<Character> heroes = new ArrayList<>();
+    private ArrayList<Character> villains = new ArrayList<>();
+    private ArrayList<String> heroesOriginalImages = new ArrayList<>();
+    private ArrayList<String> villainsOriginalImages = new ArrayList<>();
+    private PrintStream printStream;
+
     List<Character> eliminatedHeroes = new ArrayList<>();
     List<Character> eliminatedVillains = new ArrayList<>();
+    JFrame frame = new JFrame("Game Logs");
     private int heroesScore = 0;
     private int villainsScore = 0;
+
+    private void loadOriginalButtonImages() {
+        originalButtonImages = new String[characters.length];
+        int contCharacter = 0;
+        for (int i = 0; i < characters.length; i++) {
+            if (characters[i].isHero()) {
+                heroes.add(characters[i]);
+                heroesOriginalImages.add(characters[i].getImage().getDescription());
+            } else {
+                villains.add(characters[i]);
+                villainsOriginalImages.add(characters[i].getImage().getDescription());
+            }
+            // originalButtonImages[contCharacter] =
+            // characters[contCharacter].getImage().getDescription();
+            contCharacter++;
+        }
+    }
 
     public GameBoard() {
         // Set up the main frame
         setTitle("Stratego - Marvel Heroes");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridLayout(10, 10));
+        setLayout(new BorderLayout()); // Use BorderLayout for main layout
 
+        // Panel for game board
+        JPanel gameBoardPanel = new JPanel(new GridLayout(10, 10));
+        gameBoardPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add space around the game board
+
+        // Initialize the game board buttons
         characters = InitCharacters.getInstance().getCharacters();
-        // Create the game board
-        // Crear el tablero de juego
+        loadOriginalButtonImages();
+        // confirmEndTurnHideCards.addActionListener(e -> toggleCardVisibility());
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
                 buttons[row][col] = createGameSpace(row, col);
-                add(buttons[row][col]);
+                gameBoardPanel.add(buttons[row][col]);
                 buttons[row][col].setBorder(BorderFactory.createLineBorder(Color.black, 1));
             }
         }
+
+        // Add the game board panel to the center
+        add(gameBoardPanel, BorderLayout.CENTER);
+        // Add action listener to resignGame button
+
+        // Styling and adding buttons
+        // styleButton(confirmEndTurnHideCards, Color.GREEN, new Font("Arial",
+        // Font.BOLD, 14));
+        styleButton(resignGame, Color.RED, new Font("Arial", Font.BOLD, 14));
+
+        // Add buttons to the frame
+        // add(confirmEndTurnHideCards, BorderLayout.SOUTH);
+        add(resignGame, BorderLayout.NORTH);
         // En tu clase principal o en el método de inicialización de la interfaz gráfica
-        JFrame frame = new JFrame("Game Logs");
+        //JFrame frame = new JFrame("Game Logs");
         JTextArea textArea = new JTextArea(24, 80);
         textArea.setEditable(false); // Hacer que el área de texto no sea editable
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -41,30 +92,18 @@ public class GameBoard extends JFrame {
         frame.setVisible(true);
 
         // Redirige la salida estándar a la JTextArea
-        PrintStream printStream = new PrintStream(new CustomOutputStream(textArea));
+        printStream = new PrintStream(new CustomOutputStream(textArea));
         System.setOut(printStream);
         System.setErr(printStream);
-        // Initialize characters directly in the constructor
-        // int cont=0;
-        // JFrame imageFrame = new JFrame("Character Images");
-        // imageFrame.setLayout(new FlowLayout());
-        // for (Character character : characters) {
-        // System.out.println("Found character: " + character.getName()+"\tid:" +
-        // cont+"\tx:"+character.getX()+"\ty:"+character.getY());
-        // ImageIcon image = character.getImage();
-        // if (image != null) {
-        // JLabel imageLabel = new JLabel(image);
-        // imageFrame.add(imageLabel);
-        // }
-        // cont++;
-        // }
-        // imageFrame.pack();
-        // imageFrame.setVisible(true);
-
-        // Set up the frame size
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
+        resignGame.addActionListener(e -> endGame());
+    }
+
+    private void toggleCardVisibility() {
+        repaint();
+        isHeroTurn = !isHeroTurn;
     }
 
     private JButton createGameSpace(int row, int col) {
@@ -117,7 +156,6 @@ public class GameBoard extends JFrame {
     }
 
     private Character selectedCharacter = null;
-    private boolean isHeroTurn = true;
 
     private void handleButtonClick(int row, int col) {
         System.out.println("Clicked on row " + row + ", column " + col);
@@ -159,6 +197,15 @@ public class GameBoard extends JFrame {
                 if (targetCharacter != null) {
                     // Asegúrate de que los personajes son de equipos opuestos
                     if (selectedCharacter.isHero() != targetCharacter.isHero()) {
+                        if (selectedCharacter.getPowerRating() == 2) {
+                            Character adjacentCharacter = getCharacterAtLocation(row - 1, col);
+                            if (adjacentCharacter != null && (selectedCharacter.isHero() != adjacentCharacter.isHero()
+                                    || selectedCharacter.isHero() == adjacentCharacter.isHero())) {
+                                // No permitas el movimiento
+                                System.out.println("No puedes moverte allí");
+                                return;
+                            }
+                        }
                         if (targetCharacter.getName().equals("Tierra")) {
                             endGame("Villains");
                         } else if (targetCharacter.getName().equals("Planet Tierra")) {
@@ -179,6 +226,8 @@ public class GameBoard extends JFrame {
                             // Si una pieza menor ataca a una mayor, se elimina sola
                             eliminateCharacter(selectedCharacter, true, false);
                             selectedCharacter = null; // Permitir la selección de otra pieza
+                            changeCardBackgrounds();
+                            repaint();
                             isHeroTurn = !isHeroTurn;
                         } else if (selectedCharacter.getPowerRating() == targetCharacter.getPowerRating()) {
                             // Si tienen el mismo powerRating, se eliminan solas
@@ -194,8 +243,9 @@ public class GameBoard extends JFrame {
                             }
 
                             selectedCharacter = null; // Permitir la selección de otra pieza
-                            isHeroTurn = !isHeroTurn;
+                            changeCardBackgrounds();
                             repaint();
+                            isHeroTurn = !isHeroTurn;
                             updateEliminatedCharactersWindows();
                         } else if (selectedCharacter.getPowerRating() == 1) {
                             // saveTheEarth();
@@ -203,23 +253,21 @@ public class GameBoard extends JFrame {
                             // Handle other cases if needed
                         }
                     }
+                    // changeCardBackgrounds();
                 }
+
             }
         }
     }
 
     private void endGame(String winner) {
-        // Muestra un mensaje al usuario
-        if (winner.equals("Villains")) {
-            System.out.println("¡Los villanos han capturado la Tierra y ganado el juego!");
-        } else if (winner.equals("Heroes")) {
-            System.out.println("¡Los héroes han capturado el Planeta Tierra y ganado el juego!");
+        // Handle the game ending logic here
+        if (isHeroTurn) {
+            JOptionPane.showMessageDialog(this, "Heroes win! +3 points"); // Display a message
+        } else {
+            JOptionPane.showMessageDialog(this, "Villains win!"); // Display a message
         }
-
-        // Aquí puedes poner la lógica para terminar el juego
-        // Por ejemplo, podrías detener todos los hilos de ejecución del juego, cerrar
-        // todas las ventanas, etc.
-        System.out.println("El juego ha terminado.");
+        dispose(); // Close the game window
     }
 
     private boolean isPathClear(int startX, int startY, int endX, int endY) {
@@ -278,7 +326,7 @@ public class GameBoard extends JFrame {
         buttons[oldX][oldY].setBorder(BorderFactory.createLineBorder(Color.black, 1));
 
         selectedCharacter = null;
-
+        changeCardBackgrounds();
         repaint();
     }
 
@@ -385,6 +433,56 @@ public class GameBoard extends JFrame {
         heroesWindow.repaint();
         villainsWindow.revalidate();
         villainsWindow.repaint();
+    }
+
+    private void styleButton(JButton button, Color color, Font font) {
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setFont(font);
+        button.setFocusPainted(false);
+        button.setBorder(BorderFactory.createRaisedBevelBorder());
+    }
+
+    private void changeCardBackgrounds() {
+        int contCharacterVillain = 0;
+        int contCharacterHero = 0;
+        if (isHeroTurn) {
+            for (Character character : heroes) {
+                character.setImage(cardBackgroundImages);
+            }
+            // reset to default values
+            for (Character character : villains) {
+                character.setImage(villainsOriginalImages.get(contCharacterVillain));
+                contCharacterVillain++;
+            }
+
+        }
+        if (!isHeroTurn) {
+            for (Character character : villains) {
+                character.setImage(cardBackgroundImages);
+            }
+            // reset to default values
+            for (Character character : heroes) {
+                character.setImage(heroesOriginalImages.get(contCharacterHero));
+                contCharacterHero++;
+            }
+        }
+    }
+
+    private void endGame() {
+        // Handle the game ending logic here
+        if (isHeroTurn) {
+            JOptionPane.showMessageDialog(this, "Heroes win! +3 points"); // Display a message
+        } else {
+            JOptionPane.showMessageDialog(this, "Villains win!"); // Display a message
+        }
+        dispose(); // Close the game window
+        // close other windows of logs and villains heroes
+        heroesWindow.dispose();
+        villainsWindow.dispose();
+        frame.dispose();
+        System.setOut(new PrintStream(new FileOutputStream(FileDescriptor.out)));
+        System.setErr(new PrintStream(new FileOutputStream(FileDescriptor.err)));
     }
 
     public static void main(String[] args) {
