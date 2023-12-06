@@ -196,13 +196,27 @@ public class GameBoard extends JFrame {
 
                 if (targetCharacter != null) {
                     // Asegúrate de que los personajes son de equipos opuestos
+                    //open a windows for confirm fight with two buttons confirm proceed else selectedCharacter =null
+                    
                     if (selectedCharacter.isHero() != targetCharacter.isHero()) {
+                        Object[] options = {"Confirmar", "Cancelar"};
+                        int n = JOptionPane.showOptionDialog(this,
+                            "¿Estás seguro de que quieres luchar?",
+                            "Confirmar lucha",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[1]);
+                    
+                        if (n == JOptionPane.YES_OPTION) {
+                            
                         if (selectedCharacter.getPowerRating() == 2) {
                             Character adjacentCharacter = getCharacterAtLocation(row - 1, col);
                             if (adjacentCharacter != null && (selectedCharacter.isHero() != adjacentCharacter.isHero()
                                     || selectedCharacter.isHero() == adjacentCharacter.isHero())) {
                                 // No permitas el movimiento
-                                System.out.println("No puedes moverte allí");
+                                System.out.println("Movimiento incorrecto");
                                 return;
                             }
                         }
@@ -251,7 +265,11 @@ public class GameBoard extends JFrame {
                             // saveTheEarth();
                         } else {
                             // Handle other cases if needed
+                            System.out.println("Movimiento incorrecto");
                         }
+                    } else {
+                        selectedCharacter = null;
+                    }
                     }
                     // changeCardBackgrounds();
                 }
