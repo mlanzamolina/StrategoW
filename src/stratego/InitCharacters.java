@@ -267,140 +267,140 @@ public class InitCharacters {
         characters = _characters;
 
         // Tierra
-        characters[0] = new Character("Tierra", true, true, 0, "./src/stratego/images/-10.png");
+        characters[0] = new Character("Tierra", true, true, 0, "./src/stratego/images/Earth Hero.jpeg");
         // Héroe de Tierra
-        characters[1] = new Character("Planet Tierra", false, true, 0, "./src/stratego/images/11.png");
+        characters[1] = new Character("Planet Tierra", false, true, 0, "./src/stratego/images/Earth Villain.jpeg");
 
         // Piezas Bombas
-        characters[2] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/-25.png");
-        characters[3] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/-25.png");
-        characters[4] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/-25.png");
-        characters[5] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/-25.png");
-        characters[6] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/-25.png");
-        characters[7] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/-25.png");
+        characters[2] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/Pumpkin Bomb.jpeg");
+        characters[3] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/Pumpkin Bomb.jpeg");
+        characters[4] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/Pumpkin Bomb.jpeg");
+        characters[5] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/Pumpkin Bomb.jpeg");
+        characters[6] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/Pumpkin Bomb.jpeg");
+        characters[7] = new Character("Pumpkin Bomb", false, true, 11, "./src/stratego/images/Pumpkin Bomb.jpeg");
 
         // Bombas villanas
-        characters[8] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/35.png");
-        characters[9] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/35.png");
-        characters[10] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/35.png");
-        characters[11] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/35.png");
-        characters[12] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/35.png");
-        characters[13] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/35.png");
+        characters[8] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/Nova Blast.jpeg");
+        characters[9] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/Nova Blast.jpeg");
+        characters[10] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/Nova Blast.jpeg");
+        characters[11] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/Nova Blast.jpeg");
+        characters[12] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/Nova Blast.jpeg");
+        characters[13] = new Character("Nova Blast", true, true, 11, "./src/stratego/images/Nova Blast.jpeg");
 
         // Rango 1
-        characters[14] = new Character("Black Widow", true, true, 1, "./src/stratego/images/2.png");
-        characters[15] = new Character("Black Widow", false, true, 1, "./src/stratego/images/-4.png");
+        characters[14] = new Character("Black Widow", true, true, 1, "./src/stratego/images/1.jpeg");
+        characters[15] = new Character("Black Widow", false, true, 1, "./src/stratego/images/11.jpeg");
         // Rango 2
         // Villanos PR 2
-        characters[16] = new Character("Electro", false, true, 2, "./src/stratego/images/-11.png");
-        characters[17] = new Character("Sentinel 1", false, true, 2, "./src/stratego/images/-31.png");
-        characters[18] = new Character("Sentinel 2", false, true, 2, "./src/stratego/images/-40.png");
-        characters[19] = new Character("Viper", false, true, 2, "./src/stratego/images/-35.png");
-        characters[20] = new Character("Leader", false, true, 2, "./src/stratego/images/-16.png");
-        characters[21] = new Character("Sandman", false, true, 2, "./src/stratego/images/-29.png");
-        characters[22] = new Character("Ultron", false, true, 2, "./src/stratego/images/-33.png");
-        characters[23] = new Character("Mr. Sinister", false, true, 2, "./src/stratego/images/-20.png");
+        characters[16] = new Character("Electro", false, true, 2, "./src/stratego/images/22222222222222.jpeg");
+        characters[17] = new Character("Sentinel 1", false, true, 2, "./src/stratego/images/2222222222222222.jpeg");
+        characters[18] = new Character("Sentinel 2", false, true, 2, "./src/stratego/images/2222222222.jpeg");
+        characters[19] = new Character("Viper", false, true, 2, "./src/stratego/images/222222222222222.jpeg");
+        characters[20] = new Character("Leader", false, true, 2, "./src/stratego/images/2222222222.jpeg");
+        characters[21] = new Character("Sandman", false, true, 2, "./src/stratego/images/22222222222.jpeg");
+        characters[22] = new Character("Ultron", false, true, 2, "./src/stratego/images/2222222222222222.jpeg");
+        characters[23] = new Character("Mr. Sinister", false, true, 2, "./src/stratego/images/222222222222.jpeg");
 
         // Rango 3
         // Héroes PR 2
-        characters[24] = new Character("Dr Strange", true, true, 2, "./src/stratego/images/8.png");
-        characters[25] = new Character("Phoenix", true, true, 2, "./src/stratego/images/24.png");
-        characters[26] = new Character("Storm", true, true, 2, "./src/stratego/images/31.png");
-        characters[27] = new Character("Ice man", true, true, 2, "./src/stratego/images/17.png");
-        characters[28] = new Character("Spider girl", true, true, 2, "./src/stratego/images/29.png");
-        characters[29] = new Character("Gambit", true, true, 2, "./src/stratego/images/12.png");
-        characters[30] = new Character("Nightcrawler", true, true, 2, "./src/stratego/images/23.png");
-        characters[31] = new Character("Elektra", true, true, 2, "./src/stratego/images/9.png");
+        characters[24] = new Character("Dr Strange", true, true, 2, "./src/stratego/images/22222.jpeg");
+        characters[25] = new Character("Phoenix", true, true, 2, "./src/stratego/images/2222.jpeg");
+        characters[26] = new Character("Storm", true, true, 2, "./src/stratego/images/222222.jpeg");
+        characters[27] = new Character("Ice man", true, true, 2, "./src/stratego/images/2.jpeg");
+        characters[28] = new Character("Spider girl", true, true, 2, "./src/stratego/images/222222222.jpeg");
+        characters[29] = new Character("Gambit", true, true, 2, "./src/stratego/images/222.jpeg");
+        characters[30] = new Character("Nightcrawler", true, true, 2, "./src/stratego/images/222222.jpeg");
+        characters[31] = new Character("Elektra", true, true, 2, "./src/stratego/images/22.jpeg");
 
         // Rango 4
         // Héroes PR 3
-        characters[32] = new Character("Colossus", true, true, 3, "./src/stratego/images/5.png");
-        characters[33] = new Character("Beast", true, true, 3, "./src/stratego/images/1.png");
-        characters[34] = new Character("She hulk", true, true, 3, "./src/stratego/images/27.png");
-        characters[35] = new Character("Emma Frost", true, true, 3, "./src/stratego/images/10.png");
-        characters[36] = new Character("Giant man", true, true, 3, "./src/stratego/images/14.png");
+        characters[32] = new Character("Colossus", true, true, 3, "./src/stratego/images/333.jpeg");
+        characters[33] = new Character("Beast", true, true, 3, "./src/stratego/images/3.jpeg");
+        characters[34] = new Character("She hulk", true, true, 3, "./src/stratego/images/3333.jpeg");
+        characters[35] = new Character("Emma Frost", true, true, 3, "./src/stratego/images/33333.jpeg");
+        characters[36] = new Character("Giant man", true, true, 3, "./src/stratego/images/33.jpeg");
 
         // Rango 5
         // Villanos PR 3
-        characters[37] = new Character("Lizard", false, true, 3, "./src/stratego/images/-17.png");
-        characters[38] = new Character("Mole Man", false, true, 3, "./src/stratego/images/-19.png");
-        characters[39] = new Character("Carnage", false, true, 3, "./src/stratego/images/-6.png");
-        characters[40] = new Character("Rhino", false, true, 3, "./src/stratego/images/-27.png");
-        characters[41] = new Character("Juggernaut", false, true, 3, "./src/stratego/images/-14.png");
+        characters[37] = new Character("Lizard", false, true, 3, "./src/stratego/images/33333333.jpeg");
+        characters[38] = new Character("Mole Man", false, true, 3, "./src/stratego/images/333333333.jpeg");
+        characters[39] = new Character("Carnage", false, true, 3, "./src/stratego/images/3333333333.jpeg");
+        characters[40] = new Character("Rhino", false, true, 3, "./src/stratego/images/333333.jpeg");
+        characters[41] = new Character("Juggernaut", false, true, 3, "./src/stratego/images/3333333.jpeg");
 
         // Rango 6
         // Villanos PR 4
-        characters[42] = new Character("SabreTooth", false, true, 4, "./src/stratego/images/-28.png");
-        characters[43] = new Character("Black cat", false, true, 4, "./src/stratego/images/-3.png");
-        characters[44] = new Character("Thanos", false, true, 4, "./src/stratego/images/-32.png");
-        characters[45] = new Character("Abomination", false, true, 4, "./src/stratego/images/-1.png");
+        characters[42] = new Character("SabreTooth", false, true, 4, "./src/stratego/images/4444444.jpeg");
+        characters[43] = new Character("Black cat", false, true, 4, "./src/stratego/images/44444.jpeg");
+        characters[44] = new Character("Thanos", false, true, 4, "./src/stratego/images/44444444.jpeg");
+        characters[45] = new Character("Abomination", false, true, 4, "./src/stratego/images/4444444.jpeg");
 
         // Héroes PR 4
-        characters[46] = new Character("Thing", true, true, 4, "./src/stratego/images/32.png");
-        characters[47] = new Character("Blade", true, true, 4, "./src/stratego/images/3.png");
-        characters[48] = new Character("Punisher", true, true, 4, "./src/stratego/images/26.png");
-        characters[49] = new Character("Ghost Rider", true, true, 4, "./src/stratego/images/13.png");
+        characters[46] = new Character("Thing", true, true, 4, "./src/stratego/images/444.jpeg");
+        characters[47] = new Character("Blade", true, true, 4, "./src/stratego/images/44.jpeg");
+        characters[48] = new Character("Punisher", true, true, 4, "./src/stratego/images/4444.jpeg");
+        characters[49] = new Character("Ghost Rider", true, true, 4, "./src/stratego/images/4.jpeg");
 
         // Rango 7
         // Villanos PR 5
-        characters[50] = new Character("Deadpool", false, true, 5, "./src/stratego/images/-7.png");
-        characters[51] = new Character("Dr Octopus", false, true, 5, "./src/stratego/images/octopus.png"); // Add the
+        characters[50] = new Character("Deadpool", false, true, 5, "./src/stratego/images/55555555.jpeg");
+        characters[51] = new Character("Dr Octopus", false, true, 5, "./src/stratego/images/5555555.jpeg"); // Add the
                                                                                                            // image name
-        characters[52] = new Character("Mysterio", false, true, 5, "./src/stratego/images/-21.png");
-        characters[53] = new Character("Mystique", false, true, 5, "./src/stratego/images/-22.png");
+        characters[52] = new Character("Mysterio", false, true, 5, "./src/stratego/images/555555.jpeg");
+        characters[53] = new Character("Mystique", false, true, 5, "./src/stratego/images/55555.jpeg");
 
         // Héroes PR 5
-        characters[54] = new Character("Invisible Woman", true, true, 5, "./src/stratego/images/18.png");
-        characters[55] = new Character("Cyclops", true, true, 5, "./src/stratego/images/6.png");
-        characters[56] = new Character("Human Torch", true, true, 5, "./src/stratego/images/16.png");
-        characters[57] = new Character("Thor", true, true, 5, "./src/stratego/images/33.png");
+        characters[54] = new Character("Invisible Woman", true, true, 5, "./src/stratego/images/555.jpeg");
+        characters[55] = new Character("Cyclops", true, true, 5, "./src/stratego/images/55.jpeg");
+        characters[56] = new Character("Human Torch", true, true, 5, "./src/stratego/images/5555.jpeg");
+        characters[57] = new Character("Thor", true, true, 5, "./src/stratego/images/5.jpeg");
 
         // Rango 8
         // Villanos PR 6
-        characters[58] = new Character("Red Skull", false, true, 6, "./src/stratego/images/-26.png");
-        characters[59] = new Character("Onslaught", false, true, 6, "./src/stratego/images/-24.png");
-        characters[60] = new Character("Omega Red", false, true, 6, "./src/stratego/images/-23.png");
-        characters[61] = new Character("Bullseye", false, true, 6, "./src/stratego/images/-5.png");
+        characters[58] = new Character("Red Skull", false, true, 6, "./src/stratego/images/66666.jpeg");
+        characters[59] = new Character("Onslaught", false, true, 6, "./src/stratego/images/6666666.jpeg");
+        characters[60] = new Character("Omega Red", false, true, 6, "./src/stratego/images/666666.jpeg");
+        characters[61] = new Character("Bullseye", false, true, 6, "./src/stratego/images/66666666.jpeg");
 
         // Héroes PR 6
-        characters[62] = new Character("Iron Man", true, true, 6, "./src/stratego/images/19.png");
-        characters[63] = new Character("Hulk", true, true, 6, "./src/stratego/images/15.png");
-        characters[64] = new Character("Silver Surfer", true, true, 6, "./src/stratego/images/28.png");
-        characters[65] = new Character("Daredevil", true, true, 6, "./src/stratego/images/7.png");
+        characters[62] = new Character("Iron Man", true, true, 6, "./src/stratego/images/6666.jpeg");
+        characters[63] = new Character("Hulk", true, true, 6, "./src/stratego/images/666.jpeg");
+        characters[64] = new Character("Silver Surfer", true, true, 6, "./src/stratego/images/66.jpeg");
+        characters[65] = new Character("Daredevil", true, true, 6, "./src/stratego/images/6.jpeg");
 
         // Rango 9
         // Villanos PR 7
-        characters[66] = new Character("Venom", false, true, 7, "./src/stratego/images/-34.png");
-        characters[67] = new Character("Green Goblin", false, true, 7, "./src/stratego/images/-13.png");
-        characters[68] = new Character("Apocalypse", false, true, 7, "./src/stratego/images/-2.png");
+        characters[66] = new Character("Venom", false, true, 7, "./src/stratego/images/777777.jpeg");
+        characters[67] = new Character("Green Goblin", false, true, 7, "./src/stratego/images/7777.jpeg");
+        characters[68] = new Character("Apocalypse", false, true, 7, "./src/stratego/images/77777.jpeg");
 
         // Héroes PR 7
-        characters[69] = new Character("Namor", true, true, 7, "./src/stratego/images/21.png");
-        characters[70] = new Character("Wolverine", true, true, 7, "./src/stratego/images/34.png");
-        characters[71] = new Character("SpiderMan", true, true, 7, "./src/stratego/images/30.png");
+        characters[69] = new Character("Namor", true, true, 7, "./src/stratego/images/7.jpeg");
+        characters[70] = new Character("Wolverine", true, true, 7, "./src/stratego/images/77.jpeg");
+        characters[71] = new Character("SpiderMan", true, true, 7, "./src/stratego/images/777.jpeg");
 
         // Rango 10
         // Villanos PR 8
-        characters[72] = new Character("Magneto", false, true, 8, "./src/stratego/images/-18.png");
-        characters[73] = new Character("KingPin", false, true, 8, "./src/stratego/images/-15.png");
+        characters[72] = new Character("Magneto", false, true, 8, "./src/stratego/images/888.jpeg");
+        characters[73] = new Character("KingPin", false, true, 8, "./src/stratego/images/8888.jpeg");
 
         // Héroes PR 8
-        characters[74] = new Character("Nick Fury", true, true, 8, "./src/stratego/images/22.png");
-        characters[75] = new Character("Professor X", true, true, 8, "./src/stratego/images/25.png");
+        characters[74] = new Character("Nick Fury", true, true, 8, "./src/stratego/images/88.jpeg");
+        characters[75] = new Character("Professor X", true, true, 8, "./src/stratego/images/8.jpeg");
 
         // Rango 11
         // Villanos PR 9
-        characters[76] = new Character("Galactus", false, true, 9, "./src/stratego/images/-12.png");
+        characters[76] = new Character("Galactus", false, true, 9, "./src/stratego/images/99.jpeg");
 
         // Héroes PR 9
-        characters[77] = new Character("Captain America", true, true, 9, "./src/stratego/images/4.png");
+        characters[77] = new Character("Captain America", true, true, 9, "./src/stratego/images/9.jpeg");
 
         // Rango 12
         // Villanos PR 10
-        characters[78] = new Character("Dr Doom", false, true, 10, "./src/stratego/images/-8.png");
+        characters[78] = new Character("Dr Doom", false, true, 10, "./src/stratego/images/10-10.jpeg");
 
         // Héroes PR 10
-        characters[79] = new Character("Mr Fantastic", true, true, 10, "./src/stratego/images/20.png");
+        characters[79] = new Character("Mr Fantastic", true, true, 10, "./src/stratego/images/10.jpeg");
 
         return characters;
 

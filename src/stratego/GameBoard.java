@@ -14,7 +14,7 @@ public class GameBoard extends JFrame {
     private Character[] characters;
     private JButton[][] buttons = new JButton[10][10]; // Matriz de botones
     // private JButton confirmEndTurnHideCards = new JButton("Confirm End Turn");
-    private JButton resignGame = new JButton("Resign Game");
+    private JButton resignGame = new JButton("Surrender");
     private String cardBackgroundImages = "./src/stratego/images/Who_question_mark.png"; // Array to hold card
                                                                                          // background images
     private String[] originalButtonImages;
@@ -77,11 +77,11 @@ public class GameBoard extends JFrame {
         // Styling and adding buttons
         // styleButton(confirmEndTurnHideCards, Color.GREEN, new Font("Arial",
         // Font.BOLD, 14));
-        styleButton(resignGame, Color.RED, new Font("Arial", Font.BOLD, 14));
+        styleButton(resignGame, Color.RED, new Font("Times new roman", Font.BOLD, 14));
 
         // Add buttons to the frame
         // add(confirmEndTurnHideCards, BorderLayout.SOUTH);
-        add(resignGame, BorderLayout.NORTH);
+        add(resignGame, BorderLayout.SOUTH);
         // En tu clase principal o en el método de inicialización de la interfaz gráfica
         //JFrame frame = new JFrame("Game Logs");
         JTextArea textArea = new JTextArea(24, 80);
