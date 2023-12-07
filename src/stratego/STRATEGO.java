@@ -13,7 +13,7 @@ public class STRATEGO {
        // Get the array of characters
         //Character[] characters = initCharacters.getCharacters();
         
-        SwingUtilities.invokeLater(() -> new InitMenu().setVisible(true));
+        SwingUtilities.invokeLater(() -> new GameBoard().setVisible(true));
 //          for (Character character : characters) {
 //                System.out.println("Found character: " + character.getName());
 //            }
