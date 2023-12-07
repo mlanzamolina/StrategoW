@@ -6,6 +6,7 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
@@ -28,12 +29,13 @@ public class GameBoard extends JFrame {
     private ArrayList<String> villainsOriginalImages = new ArrayList<>();
     private PrintStream printStream;
     private Boolean gameHasInit = false;
+    private Boolean gameEndedOnNoPieces = false;
     JPanel eliminatedHeroesPanel = new JPanel(new GridLayout(10, 10));
     JPanel eliminatedVillainsPanel = new JPanel(new GridLayout(10, 10));
 
     List<Character> eliminatedHeroes = new ArrayList<>();
     List<Character> eliminatedVillains = new ArrayList<>();
-   // JFrame frame = new JFrame("Game Logs");
+    // JFrame frame = new JFrame("Game Logs");
     private int heroesScore = 0;
     private int villainsScore = 0;
 
@@ -56,6 +58,19 @@ public class GameBoard extends JFrame {
 
     public GameBoard() {
         // Set up the main frame
+        Object[] options = { "YES", "NO" };
+        int n = JOptionPane.showOptionDialog(this,
+                "¿Quieres jugar con heroes?",
+                "Confirmar bando",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]);
+
+        if (n != JOptionPane.YES_OPTION) {
+            isHeroTurn = false;
+        }
         setTitle("Stratego - Marvel Heroes");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout()); // Use BorderLayout for main layout
@@ -153,15 +168,27 @@ public class GameBoard extends JFrame {
                     }
                 });
         add(eliminatedVillainsPanel, BorderLayout.WEST);
+        Boolean shouldEndForVillain = false;
+        Boolean shouldEndForHero = false;
+        List<String> excludeNames = Arrays.asList("Pumpkin", "Bomb Nova Blast", "Tierra", "Planet Tierra");
+
+        for (Character hero : heroes) {
+            if (!excludeNames.contains(hero.getName()) && hero.isAlive() && hero.getMoveable()) {
+                shouldEndForVillain = true;
+            }
+        }
+        for (Character villain : villains) {
+            if (!excludeNames.contains(villain.getName()) && villain.isAlive() && villain.getMoveable()) {
+                shouldEndForHero = true;
+            }
+        }
 
         revalidate(); // Revalidate the panels to reflect the changes
+        if (!shouldEndForHero || !shouldEndForVillain) {
+            gameEndedOnNoPieces = true;
+            endGame();
+        }
         repaint(); // Repaint the panels to reflect the changes
-    }
-
-    private void toggleCardVisibility() {
-        revalidate();
-        repaint();
-        isHeroTurn = !isHeroTurn;
     }
 
     private JButton createGameSpace(int row, int col) {
@@ -292,7 +319,7 @@ public class GameBoard extends JFrame {
 
                                 JOptionPane.showMessageDialog(this, "Villains win!");
 
-                                dispose(); 
+                                dispose();
                             } else if (targetCharacter.getName().equals("Planet Tierra")) {
                                 // endGame();
                                 JOptionPane.showMessageDialog(this, "Heroes win! +3 points");
@@ -321,19 +348,20 @@ public class GameBoard extends JFrame {
                                     revalidate();
                                     repaint();
                                     isHeroTurn = !isHeroTurn;
-                                    //updateEliminatedCharactersWindows();
+                                    // updateEliminatedCharactersWindows();
 
                                 }
                             } else if (selectedCharacter.getPowerRating() == 2) {
                                 // Check if the move is in a straight line horizontally or vertically
                                 if (selectedCharacter.getX() == row || selectedCharacter.getY() == col) {
-                                    // Check if there is any character between the current position and the target position
+                                    // Check if there is any character between the current position and the target
+                                    // position
                                     int xDirection = Integer.compare(row, selectedCharacter.getX());
                                     int yDirection = Integer.compare(col, selectedCharacter.getY());
-                            
+
                                     int x = selectedCharacter.getX() + xDirection;
                                     int y = selectedCharacter.getY() + yDirection;
-                            
+
                                     while (x != row || y != col) {
                                         Character intermediateCharacter = getCharacterAtLocation(x, y);
                                         if (intermediateCharacter != null) {
@@ -341,19 +369,21 @@ public class GameBoard extends JFrame {
                                             System.out.println("Movimiento incorrecto");
                                             return;
                                         }
-                            
+
                                         x += xDirection;
                                         y += yDirection;
                                     }
-                            
+
                                     // Check the character at the target position
                                     targetCharacter = getCharacterAtLocation(row, col);
                                     if (targetCharacter != null) {
                                         if (selectedCharacter.isHero() == targetCharacter.isHero()) {
-                                            // The target position is occupied by a character of the same type, so the move is not allowed
+                                            // The target position is occupied by a character of the same type, so the
+                                            // move is not allowed
                                             System.out.println("Movimiento incorrecto");
                                             return;
-                                        } else if (selectedCharacter.getPowerRating() == targetCharacter.getPowerRating()) {
+                                        } else if (selectedCharacter.getPowerRating() == targetCharacter
+                                                .getPowerRating()) {
                                             // If they have the same powerRating, they eliminate each other
                                             List<Character> charactersToEliminate = new ArrayList<>();
                                             charactersToEliminate.add(targetCharacter);
@@ -365,14 +395,15 @@ public class GameBoard extends JFrame {
                                             for (Character character : charactersToEliminate) {
                                                 eliminateCharacter(character, false, true);
                                             }
-                            
+
                                             selectedCharacter = null; // Allow another piece to be selected
                                             changeCardBackgrounds();
                                             updatePanels();
                                             revalidate();
                                             repaint();
                                             isHeroTurn = !isHeroTurn;
-                                        } else if (selectedCharacter.getPowerRating() > targetCharacter.getPowerRating()) {
+                                        } else if (selectedCharacter.getPowerRating() > targetCharacter
+                                                .getPowerRating()) {
                                             // The selected character can eliminate the target character
                                             eliminateCharacter(targetCharacter, false, false);
                                             moveCharacter(row, col);
@@ -433,7 +464,7 @@ public class GameBoard extends JFrame {
                                 revalidate();
                                 repaint();
                                 isHeroTurn = !isHeroTurn;
-                                //updateEliminatedCharactersWindows();
+                                // updateEliminatedCharactersWindows();
 
                             } else if (selectedCharacter.getPowerRating() == 1) {
                                 // saveTheEarth();
@@ -455,12 +486,12 @@ public class GameBoard extends JFrame {
     private void endGame() {
         // Handle the game ending logic here
         // System.out.println(isHeroTurn);
-        if (isHeroTurn || (!isHeroTurn && gameHasInit)) {
+        if (isHeroTurn || (!isHeroTurn && gameHasInit) || (isHeroTurn && gameEndedOnNoPieces)) {
             JOptionPane.showMessageDialog(this, "Heroes win! +3 points");
         } else {
             JOptionPane.showMessageDialog(this, "Villains win!");
         }
-        dispose(); 
+        dispose();
     }
 
     private boolean isPathClear(int startX, int startY, int endX, int endY) {
@@ -549,33 +580,6 @@ public class GameBoard extends JFrame {
         // if villain change villain character array isAlive
         character.setX(-1);
         character.setY(-1);
-        // if (!character.isHero()) {
-        // villains.stream().filter(villain ->
-        // villain.getName().equals(character.getName())).forEach(villain ->
-        // villain.setAlive(false));
-        // } else {
-        // heroes.stream().filter(hero ->
-        // hero.getName().equals(character.getName())).forEach(hero ->
-        // hero.setAlive(false));
-        // }
-        // if (!character.isHero()) {
-        // villains.stream()
-        // .filter(villain -> villain.getName().equals(character.getName()))
-        // .forEach(villain -> {
-        // villain.setAlive(false);
-        // villain.setX(-1);
-        // villain.setY(-1);
-        // });
-        // } else {
-        // heroes.stream()
-        // .filter(hero -> hero.getName().equals(character.getName()))
-        // .forEach(hero -> {
-        // hero.setAlive(false);
-        // hero.setX(-1);
-        // hero.setY(-1);
-        // });
-        // }
-        // Agrega el personaje a la lista de personajes eliminados
         if (!mutualElim) {
             if (character.isHero()) {
                 eliminatedHeroes.add(character);
@@ -588,10 +592,9 @@ public class GameBoard extends JFrame {
             updatePanels();
             revalidate();
             repaint();
-           // updateEliminatedCharactersWindows();
         }
-    }
 
+    }
 
     private void styleButton(JButton button, Color color, Font font) {
         button.setBackground(color);
