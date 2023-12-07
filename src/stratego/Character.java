@@ -17,6 +17,10 @@ public class Character {
     private boolean moveable;
     private boolean ortogonal;
     private boolean show;
+    private static int villainCont = 0;
+    private static int heroCont = 0;
+    private int myVillainCont;
+    private int myHeroCont;
 
     // Constructor
     public Character(String name, boolean isHero, boolean isAlive, int powerRating, String FichasImagenes) {
@@ -31,6 +35,28 @@ public class Character {
         this.ortogonal = true;
         this.show = false;
         // setCoordinates(isHero);
+        if (isHero) {
+            myHeroCont = heroCont++; // Increment heroCont if the character is a hero and assign it to myHeroCont
+            myVillainCont = -1; // Set myVillainCont to -1 if the character is a hero
+        } else {
+            myVillainCont = villainCont++; // Increment villainCont if the character is a villain and assign it to myVillainCont
+            myHeroCont = -1; // Set myHeroCont to -1 if the character is a villain
+        }
+    }
+    public int getMyVillainCont() {
+        return myVillainCont;
+    }
+
+    public void setMyVillainCont(int myVillainCont) {
+        this.myVillainCont = myVillainCont;
+    }
+
+    public int getMyHeroCont() {
+        return myHeroCont;
+    }
+
+    public void setMyHeroCont(int myHeroCont) {
+        this.myHeroCont = myHeroCont;
     }
 
     // Getter methods
@@ -72,6 +98,8 @@ public class Character {
     public boolean getShow() {
         return show;
     }
+
+
     
 
     // Setter methods
