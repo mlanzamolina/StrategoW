@@ -15,7 +15,7 @@ public class GameBoard extends JFrame {
     private Character[] characters;
     private JButton[][] buttons = new JButton[10][10]; // Matriz de botones
     // private JButton confirmEndTurnHideCards = new JButton("Confirm End Turn");
-    private JButton resignGame = new JButton("Resign Game");
+    private JButton resignGame = new JButton("");
     // display eliminated characters
     private JButton[] eliminatedHeroesButton = new JButton[40];
     private JButton[] eliminatedVillainsButton = new JButton[40];
@@ -57,18 +57,32 @@ public class GameBoard extends JFrame {
     }
 
     public GameBoard() {
-        // Set up the main frame
-        Object[] options = { "YES", "NO" };
-        int n = JOptionPane.showOptionDialog(this,
-                "¿Quieres jugar con heroes?",
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Define the options
+        String[] options = { "SÍ", "NO" };
+
+        // Create a customized dialog
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "¿Quieres jugar con héroes?",
                 "Confirmar bando",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 options,
-                options[1]);
+                options[0]);
 
-        if (n != JOptionPane.YES_OPTION) {
+        // Set custom colors for the dialog
+        UIManager UI = new UIManager();
+        UI.put("OptionPane.background", Color.DARK_GRAY);
+        UI.put("OptionPane.messageForeground", Color.BLACK);
+
+        if (choice != JOptionPane.YES_OPTION) {
             isHeroTurn = false;
         }
         setTitle("Stratego - Marvel Heroes");
@@ -85,58 +99,67 @@ public class GameBoard extends JFrame {
         characters = InitCharacters.getInstance().getCharacters();
         loadOriginalButtonImages();
         // confirmEndTurnHideCards.addActionListener(e -> toggleCardVisibility());
+        Color backgroundColor = new Color(45, 45, 45); // Dark gray
+        // Color textColor = Color.WHITE;
+        Color buttonBorderColor = new Color(70, 70, 70); // Slightly lighter gray
+
+        // Set the background of the main window
+        getContentPane().setBackground(backgroundColor);
+
+        // Panel for game board
+        gameBoardPanel.setPreferredSize(new Dimension(1200, 800));
+        gameBoardPanel.setBackground(backgroundColor); // Set background color of the game board
+
+        // Initialize the game board buttons
+        // ... existing code for initializing buttons ...
+
         for (int row = 0; row < 10; row++) {
             for (int col = 0; col < 10; col++) {
                 buttons[row][col] = createGameSpace(row, col);
+                buttons[row][col].setBackground(backgroundColor); // Set button background
+                //buttons[row][col].setForeground(textColor); // Set button text color
+                buttons[row][col].setBorder(BorderFactory.createLineBorder(buttonBorderColor, 1));
+                boolean isYellowZone = (row >= 4 && row <= 5 && col >= 2 && col <= 3);
+                boolean isMagentaZone = (row >= 4 && row <= 5 && col >= 6 && col <= 7);
+
+                if (isYellowZone || isMagentaZone) {
+                    // Set color for forbidden zones (yellow and magenta)
+                    buttons[row][col].setBackground(isYellowZone ? Color.YELLOW : Color.MAGENTA);
+                    buttons[row][col].setOpaque(true); // Make the button's background visible
+                    buttons[row][col].setEnabled(false); // Disable buttons in forbidden zones
+                } else {
+                    buttons[row][col].setBackground(backgroundColor); // Set button background
+                }
                 gameBoardPanel.add(buttons[row][col]);
-                buttons[row][col].setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                buttons[row][col].setBorder(BorderFactory.createLineBorder(Color.white, 1));
             }
         }
 
-        // Add the game board panel to the center
         add(gameBoardPanel, BorderLayout.CENTER);
-        // Add action listener to resignGame button
+        String imagePath = "./src/stratego/images/resign.png"; // Replace with your image path
 
-        // Styling and adding buttons
-        // styleButton(confirmEndTurnHideCards, Color.GREEN, new Font("Arial",
-        // Font.BOLD, 14));
-        styleButton(resignGame, Color.RED, new Font("Arial", Font.BOLD, 14));
+        ImageIcon resignIcon = new ImageIcon(imagePath);
+        resignGame.setIcon(resignIcon);
 
-        // Add buttons to the frame
-        // add(confirmEndTurnHideCards, BorderLayout.SOUTH);
-        add(resignGame, BorderLayout.NORTH);
-        // ...
+        // Set the button size to the image size
+        Dimension imageSize = new Dimension(resignIcon.getIconWidth(), resignIcon.getIconHeight());
+        resignGame.setPreferredSize(imageSize);
 
-        // int numHeroes = (int) heroes.stream().filter(hero ->
-        // !hero.isAlive()).count();
-        // eliminatedHeroesPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE,
-        // 10));
-        // heroes.stream().filter(hero -> !hero.isAlive()).forEach(hero ->
-        // eliminatedHeroesPanel.add(new JLabel(new
-        // ImageIcon(hero.getImage().getDescription()))));
-        // add(eliminatedHeroesPanel, BorderLayout.EAST);
+        // Optional: Remove text from the button if you only want the image
+        resignGame.setText("");
+        add(resignGame, BorderLayout.SOUTH);
 
-        // int numVillains = (int) villains.stream().filter(villain ->
-        // !villain.isAlive()).count();
-        // eliminatedVillainsPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE,
-        // 10));
-        // villains.stream().filter(villain -> !villain.isAlive()).forEach(villain ->
-        // eliminatedVillainsPanel.add(new JLabel(new
-        // ImageIcon(villain.getImage().getDescription()))));
-        // add(eliminatedVillainsPanel, BorderLayout.WEST);
+        // Optional: Adjust the size of the image/icon
+        // Image img = resignIcon.getImage();
+        // Image newImg = img.getScaledInstance(50, 50, Image.SCALE_SMOOTH); // Adjust
+        // width and height as needed
+        // resignGame.setIcon(new ImageIcon(newImg));
         updatePanels();
 
         JTextArea textArea = new JTextArea(24, 80);
-        textArea.setEditable(false); // Hacer que el área de texto no sea editable
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        // frame.add(scrollPane);
-        // frame.pack();
-        // frame.setVisible(true);
-
-        // Redirige la salida estándar a la JTextArea
-        printStream = new PrintStream(new CustomOutputStream(textArea));
-        System.setOut(printStream);
-        System.setErr(printStream);
+        textArea.setEditable(false);
+        textArea.setBackground(backgroundColor); // Set background color
+        // textArea.setForeground(textColor); // Set text color
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
@@ -145,26 +168,39 @@ public class GameBoard extends JFrame {
     }
 
     public void updatePanels() {
-        eliminatedHeroesPanel.removeAll(); // Remove all existing components from the panel
-        eliminatedHeroesPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 10));
+        Color panelBackgroundColor = Color.BLACK; // Color for the panel background
+        Color borderColor = Color.WHITE; // Color for the border
+
+        // Update for eliminatedHeroesPanel
+        eliminatedHeroesPanel.removeAll();
+        eliminatedHeroesPanel.setBackground(panelBackgroundColor); // Set the background color
+        eliminatedHeroesPanel.setBorder(BorderFactory.createLineBorder(borderColor, 10));
         heroes.stream()
                 .filter(hero -> !hero.isAlive())
                 .forEach(hero -> {
                     int index = hero.getMyHeroCont();
                     if (index < heroesOriginalImages.size()) {
-                        eliminatedHeroesPanel.add(new JLabel(new ImageIcon(heroesOriginalImages.get(index))));
+                        JLabel label = new JLabel(new ImageIcon(heroesOriginalImages.get(index)));
+                        label.setBackground(panelBackgroundColor); // Set the background color for each label
+                        label.setOpaque(true); // Make the label's background visible
+                        eliminatedHeroesPanel.add(label);
                     }
                 });
         add(eliminatedHeroesPanel, BorderLayout.EAST);
 
-        eliminatedVillainsPanel.removeAll(); // Remove all existing components from the panel
-        eliminatedVillainsPanel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 10));
+        // Update for eliminatedVillainsPanel
+        eliminatedVillainsPanel.removeAll();
+        eliminatedVillainsPanel.setBackground(panelBackgroundColor); // Set the background color
+        eliminatedVillainsPanel.setBorder(BorderFactory.createLineBorder(borderColor, 10));
         villains.stream()
                 .filter(villain -> !villain.isAlive())
                 .forEach(villain -> {
                     int index = villain.getMyVillainCont();
                     if (index < villainsOriginalImages.size()) {
-                        eliminatedVillainsPanel.add(new JLabel(new ImageIcon(villainsOriginalImages.get(index))));
+                        JLabel label = new JLabel(new ImageIcon(villainsOriginalImages.get(index)));
+                        label.setBackground(panelBackgroundColor); // Set the background color for each label
+                        label.setOpaque(true); // Make the label's background visible
+                        eliminatedVillainsPanel.add(label);
                     }
                 });
         add(eliminatedVillainsPanel, BorderLayout.WEST);
@@ -209,14 +245,14 @@ public class GameBoard extends JFrame {
 
                             // Pinta el borde de azul si es un héroe, de rojo si no lo es
                             if (character.isHero()) {
-                                setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
+                                setBorder(BorderFactory.createLineBorder(Color.ORANGE, 1));
                             } else {
-                                setBorder(BorderFactory.createLineBorder(Color.RED, 1));
+                                setBorder(BorderFactory.createLineBorder(Color.blue, 1));
                             }
 
                             // Si el personaje es el seleccionado, pinta el borde de verde
                             if (character == selectedCharacter) {
-                                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+                                setBorder(BorderFactory.createLineBorder(Color.RED, 2));
                             }
                         }
                     }
@@ -302,17 +338,35 @@ public class GameBoard extends JFrame {
                     // selectedCharacter =null
 
                     if (selectedCharacter.isHero() != targetCharacter.isHero()) {
-                        Object[] options = { "Confirmar", "Cancelar" };
-                        int n = JOptionPane.showOptionDialog(this,
+                        // Define the options
+                        try {
+                            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        
+                        // Define the options
+                        String[] options = { "Confirmar", "Cancelar" };
+                        
+                        // Create a customized dialog
+                        int choice = JOptionPane.showOptionDialog(
+                                this,
                                 "¿Estás seguro de que quieres luchar?",
                                 "Confirmar lucha",
                                 JOptionPane.YES_NO_OPTION,
                                 JOptionPane.QUESTION_MESSAGE,
                                 null,
                                 options,
-                                options[1]);
+                                options[1]
+                        );
+                        
+                        // Set custom colors for the dialog
+                        UIManager UI = new UIManager();
+                        UI.put("OptionPane.background", Color.DARK_GRAY);
+                        UI.put("OptionPane.messageForeground", Color.BLACK);
+                        
 
-                        if (n == JOptionPane.YES_OPTION) {
+                        if (choice == JOptionPane.YES_OPTION) {
 
                             if (targetCharacter.getName().equals("Tierra")) {
                                 // endGame();
@@ -334,10 +388,10 @@ public class GameBoard extends JFrame {
                                     List<Character> charactersToEliminate = new ArrayList<>();
                                     charactersToEliminate.add(targetCharacter);
                                     buttons[targetCharacter.getX()][targetCharacter.getY()]
-                                            .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                                            .setBorder(BorderFactory.createLineBorder(Color.white, 1));
                                     charactersToEliminate.add(selectedCharacter);
                                     buttons[selectedCharacter.getX()][selectedCharacter.getY()]
-                                            .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                                            .setBorder(BorderFactory.createLineBorder(Color.white, 1));
                                     for (Character character : charactersToEliminate) {
                                         eliminateCharacter(character, false, true);
                                     }
@@ -388,10 +442,10 @@ public class GameBoard extends JFrame {
                                             List<Character> charactersToEliminate = new ArrayList<>();
                                             charactersToEliminate.add(targetCharacter);
                                             buttons[targetCharacter.getX()][targetCharacter.getY()]
-                                                    .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                                                    .setBorder(BorderFactory.createLineBorder(Color.white, 1));
                                             charactersToEliminate.add(selectedCharacter);
                                             buttons[selectedCharacter.getX()][selectedCharacter.getY()]
-                                                    .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                                                    .setBorder(BorderFactory.createLineBorder(Color.white, 1));
                                             for (Character character : charactersToEliminate) {
                                                 eliminateCharacter(character, false, true);
                                             }
@@ -450,10 +504,10 @@ public class GameBoard extends JFrame {
                                 List<Character> charactersToEliminate = new ArrayList<>();
                                 charactersToEliminate.add(targetCharacter);
                                 buttons[targetCharacter.getX()][targetCharacter.getY()]
-                                        .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                                        .setBorder(BorderFactory.createLineBorder(Color.white, 1));
                                 charactersToEliminate.add(selectedCharacter);
                                 buttons[selectedCharacter.getX()][selectedCharacter.getY()]
-                                        .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                                        .setBorder(BorderFactory.createLineBorder(Color.white, 1));
                                 for (Character character : charactersToEliminate) {
                                     eliminateCharacter(character, false, true);
                                 }
@@ -521,7 +575,7 @@ public class GameBoard extends JFrame {
     private void handleCharacterDeselection(int row, int col) {
         // Restaura el color del borde dependiendo de si el personaje es un héroe o no
         buttons[row][col]
-                .setBorder(BorderFactory.createLineBorder(selectedCharacter.isHero() ? Color.BLUE : Color.RED, 1));
+                .setBorder(BorderFactory.createLineBorder(selectedCharacter.isHero() ? Color.ORANGE : Color.blue, 1));
 
         selectedCharacter = null;
         // isHeroTurn = !isHeroTurn;
@@ -545,9 +599,9 @@ public class GameBoard extends JFrame {
 
         // Restaura el color del borde dependiendo de si el personaje es un héroe o no
         buttons[row][col]
-                .setBorder(BorderFactory.createLineBorder(selectedCharacter.isHero() ? Color.BLUE : Color.RED, 1));
+                .setBorder(BorderFactory.createLineBorder(selectedCharacter.isHero() ? Color.ORANGE : Color.blue, 1));
 
-        buttons[oldX][oldY].setBorder(BorderFactory.createLineBorder(Color.black, 1));
+        buttons[oldX][oldY].setBorder(BorderFactory.createLineBorder(Color.white, 1));
 
         selectedCharacter = null;
         changeCardBackgrounds();
@@ -575,7 +629,7 @@ public class GameBoard extends JFrame {
     private void eliminateCharacter(Character character, boolean deathByBomb, boolean mutualElim) {
 
         buttons[selectedCharacter.getX()][selectedCharacter.getY()]
-                .setBorder(BorderFactory.createLineBorder(Color.black, 1));
+                .setBorder(BorderFactory.createLineBorder(Color.white, 1));
         character.setAlive(false);
         // if villain change villain character array isAlive
         character.setX(-1);
